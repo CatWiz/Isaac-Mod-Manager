@@ -6,6 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using ModManager.ViewModels;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace ModManager.Views;
 
@@ -44,5 +46,20 @@ public partial class MainWindow : Window
         {
             Vm.SelectedPath = "Invalid path";
         }
+    }
+    
+    private void RefreshModsButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(Vm.SelectedPath) || Vm.SelectedPath == "Invalid path")
+        {
+            // show a message box
+            var box = MessageBoxManager.GetMessageBoxStandard(
+            "No path",
+            "Specify a valid path to the game folder"
+            );
+            box.ShowAsync();
+            return;
+        }
+        Vm.UpdateModsList(Vm.SelectedPath);
     }
 }
