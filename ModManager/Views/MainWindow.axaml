@@ -7,7 +7,8 @@
         x:Class="ModManager.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ModManager">
+        Title="ModManager"
+        Padding="10">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -20,26 +21,25 @@
             <Setter Property="IsReadOnly" Value="True"></Setter>
             <Setter Property="CaretBrush" Value="Transparent"></Setter>
             <Setter Property="Focusable" Value="False"></Setter>
+            <Setter Property="Margin" Value="0,0,5,0"></Setter>
         </Style>
     </Window.Styles>
     
-    <Grid RowDefinitions="Auto,*" Margin="5">
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
-            <StackPanel Grid.Column="0" Margin="0, 0, 10, 0">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0">
+            <Grid ColumnDefinitions="*, Auto">
                 <TextBox
+                    Grid.Column="0"
                     Classes="readonly"
                     HorizontalAlignment="Stretch"
                     Text="{Binding Path=SelectedPath, Mode=OneWay}"/>
-            </StackPanel>
-            
-            <StackPanel Grid.Column="1">
-                <Button Name="SelectGamePathButton"
+                
+                <Button Grid.Column="1" Name="SelectGamePathButton"
                         Click="SelectGamePathButton_OnClick"
                         VerticalAlignment="Stretch">
-                    Select Path
+                    <TextBlock VerticalAlignment="Center">Select Path</TextBlock>
                 </Button>
-            </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
-
 </Window>
