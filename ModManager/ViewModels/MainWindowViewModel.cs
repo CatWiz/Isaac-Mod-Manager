@@ -15,7 +15,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public string SelectedPath
     {
-        get => string.IsNullOrEmpty(_selectedPath) ? "No path selected" : _selectedPath;
+        get => string.IsNullOrEmpty(_selectedPath) ? "" : _selectedPath;
         set => SetProperty(ref _selectedPath, value);
     }
 }

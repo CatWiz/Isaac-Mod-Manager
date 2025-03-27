@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -34,7 +35,9 @@ public partial class MainWindow : Window
             var selectedPath = storageFolder?.Path.AbsolutePath;
             if (!string.IsNullOrEmpty(selectedPath))
             {
-                Vm.SelectedPath = selectedPath;
+                selectedPath = selectedPath.Replace("%20", " ");
+                var gameExecutablePath = Path.Combine(selectedPath, "isaac-ng.exe");
+                Vm.SelectedPath = File.Exists(gameExecutablePath) ? selectedPath : "Invalid path";
             }
         }
         catch (InvalidOperationException exception)
