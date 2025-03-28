@@ -46,7 +46,7 @@
         
         <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0,10, 0, 8"></Border>       
         
-        <Grid Grid.Row="2" ColumnDefinitions="*, Auto, *, Auto, *, Auto, 0.2*">
+        <Grid Grid.Row="2" ColumnDefinitions="*, Auto, *, Auto, *, Auto, Auto">
             <Grid.DataTemplates>
                 <DataTemplate DataType="model:Mod">
                     <Grid ColumnDefinitions="*,Auto">
@@ -92,7 +92,7 @@
                          SelectionChanged="DisabledModsListBox_OnSelectionChanged"/>
             </Grid>
             <Separator Grid.Column="5" Margin="5, 0"></Separator>
-            <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Bottom">
+            <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Bottom" MaxWidth="75">
                 <Button Name="RefreshModsButton"
                         Click="RefreshModsButton_OnClick">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
@@ -103,7 +103,6 @@
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
                 </Button>
             </StackPanel>
-            
         </Grid>
     </Grid>
 </Window>
