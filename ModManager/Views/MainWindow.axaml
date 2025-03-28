@@ -83,7 +83,12 @@
                 <Button Name="RefreshModsButton"
                         Click="RefreshModsButton_OnClick">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
-                </Button> 
+                </Button>
+                <Separator Margin="0, 5"/>
+                <Button Name="ApplyModsButton"
+                        Click="ApplyModsButton_OnClick">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
+                </Button>
             </StackPanel>
             
         </Grid>

@@ -97,4 +97,25 @@ public partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(EnabledMods));
         OnPropertyChanged(nameof(DisabledMods));
     }
+
+    public void ApplyMods()
+    {
+        var modsFolderPath = Path.Combine(GamePath, "mods");
+        foreach (var mod in EnabledMods)
+        {
+            var disablePath = Path.Combine(modsFolderPath, mod.FolderName, "disable.it");
+            if (File.Exists(disablePath))
+            {
+                File.Delete(disablePath);
+            }
+        }
+        foreach (var mod in DisabledMods)
+        {
+            var disablePath = Path.Combine(modsFolderPath, mod.FolderName, "disable.it");
+            if (!File.Exists(disablePath))
+            {
+                File.Create(disablePath).Close();
+            }
+        }
+    }
 }

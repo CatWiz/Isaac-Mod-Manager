@@ -87,4 +87,9 @@ public partial class MainWindow : Window
         var selectedMods = selectedModsIndexes.Select(index => Vm.DisabledMods[index]).ToList();
         Vm.EnableMods(selectedMods);
     }
+
+    private void ApplyModsButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Vm.ApplyMods();
+    }
 }
