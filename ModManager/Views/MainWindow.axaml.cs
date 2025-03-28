@@ -45,7 +45,8 @@ public partial class MainWindow : Window
             {
                 selectedPath = selectedPath.Replace("%20", " ");
                 var gameExecutablePath = Path.Combine(selectedPath, "isaac-ng.exe");
-                Vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : "Invalid path";
+                Vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : string.Empty;
+                Vm.UpdateModsList(Vm.GamePath);
             }
         }
         catch (InvalidOperationException exception)
