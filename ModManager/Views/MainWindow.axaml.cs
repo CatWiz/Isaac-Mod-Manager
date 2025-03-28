@@ -79,6 +79,7 @@ public partial class MainWindow : Window
         var selectedModsIndexes = EnabledModsListBox.Selection.SelectedIndexes;
         var selectedMods = selectedModsIndexes.Select(index => Vm.EnabledMods[index]).ToList();
         Vm.DisableMods(selectedMods);
+        Vm.LastSelectedMod = null;
     }
 
     private void EnableModButton_OnClick(object? sender, RoutedEventArgs e)
@@ -86,6 +87,7 @@ public partial class MainWindow : Window
         var selectedModsIndexes = DisabledModsListBox.Selection.SelectedIndexes;
         var selectedMods = selectedModsIndexes.Select(index => Vm.DisabledMods[index]).ToList();
         Vm.EnableMods(selectedMods);
+        Vm.LastSelectedMod = null;
     }
 
     private void ApplyModsButton_OnClick(object? sender, RoutedEventArgs e)
@@ -98,6 +100,11 @@ public partial class MainWindow : Window
         if (e.AddedItems.Count > 0)
         {
             DisabledModsListBox.Selection.Clear();
+            var lastSelected = EnabledModsListBox.SelectedItems?.OfType<Mod>().Last();
+            if (lastSelected != null)
+            {
+                Vm.LastSelectedMod = lastSelected;
+            }
         }
     }
 
@@ -106,6 +113,11 @@ public partial class MainWindow : Window
         if (e.AddedItems.Count > 0)
         {
             EnabledModsListBox.Selection.Clear();
+            var lastSelected = DisabledModsListBox.SelectedItems?.OfType<Mod>().Last();
+            if (lastSelected != null)
+            {
+                Vm.LastSelectedMod = lastSelected;
+            }
         }
     }
 }

@@ -46,17 +46,22 @@
         
         <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0,10, 0, 8"></Border>       
         
-        <Grid Grid.Row="2" ColumnDefinitions="*, Auto, *, Auto, 0.2*">
+        <Grid Grid.Row="2" ColumnDefinitions="*, Auto, *, Auto, *, Auto, 0.2*">
             <Grid.DataTemplates>
                 <DataTemplate DataType="model:Mod">
                     <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Grid.Column="0" Text="{Binding FolderName}"/>
-                        <CheckBox Grid.Column="1" IsChecked="{Binding Enabled, Mode=OneWay}"></CheckBox>
+                        <TextBlock Grid.Column="0" Text="{Binding FolderName, Mode=OneTime}"/>
                     </Grid>
                 </DataTemplate>
             </Grid.DataTemplates>
             
-            <Grid Grid.Column="0" RowDefinitions="Auto, *">
+            <Grid Grid.Column="0">
+                <TextBlock Text="{Binding LastSelectedMod}"></TextBlock>
+            </Grid>
+            
+            <Separator Grid.Column="1"/>
+            
+            <Grid Grid.Column="2" RowDefinitions="Auto, *">
                 <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
                 <ListBox Grid.Row="1"
                          Name="EnabledModsListBox"
@@ -66,13 +71,13 @@
                 </ListBox>
             </Grid>
             
-            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
+            <StackPanel Grid.Column="3" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
                 <Button Padding="5, 0" Name="DisableModButton" Click="DisableModButton_OnClick">-&gt;</Button>
                 <Separator Margin="0, 10"/>
                 <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
             </StackPanel>
             
-            <Grid Grid.Column="2" RowDefinitions="Auto, *">
+            <Grid Grid.Column="4" RowDefinitions="Auto, *">
                 <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
                 <ListBox Grid.Row="1"
                          Name="DisabledModsListBox"
@@ -80,8 +85,8 @@
                          ItemsSource="{Binding DisabledMods}"
                          SelectionChanged="DisabledModsListBox_OnSelectionChanged"/>
             </Grid>
-            <Separator Grid.Column="3" Margin="5, 0"></Separator>
-            <StackPanel Grid.Column="4" Orientation="Vertical" VerticalAlignment="Bottom">
+            <Separator Grid.Column="5" Margin="5, 0"></Separator>
+            <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Bottom">
                 <Button Name="RefreshModsButton"
                         Click="RefreshModsButton_OnClick">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>

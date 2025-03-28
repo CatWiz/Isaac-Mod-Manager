@@ -14,15 +14,6 @@ namespace ModManager.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private class ModFolderNameComparer : Comparer<Mod>
-    {
-        public override int Compare(Mod? x, Mod? y)
-        {
-            if (x == null || y == null) return 0;
-            return string.Compare(x.FolderName, y.FolderName, StringComparison.OrdinalIgnoreCase);
-        }
-    }
-
     private ModFolderNameComparer _comparer = new();
 
     private Settings _settings;
@@ -50,7 +41,9 @@ public partial class MainWindowViewModel : ViewModelBase
             UpdateModsList(_settings.GamePath);
         }
     }
-
+    
+    [ObservableProperty]
+    private Mod? _lastSelectedMod;
     public ObservableCollection<Mod> EnabledMods { get; private set; } = new();
     public ObservableCollection<Mod> DisabledMods { get; private set; } = new();
 
@@ -58,10 +51,22 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var modsFolderPath = Path.Combine(basePath, "mods");
         var mods = Mod.GetModsList(modsFolderPath);
-
-        EnabledMods = new ObservableCollection<Mod>(mods.Where(m => m.Enabled));
-        DisabledMods = new ObservableCollection<Mod>(mods.Where(m => !m.Enabled));
         
+        EnabledMods.Clear();
+        DisabledMods.Clear();
+        foreach (var mod in mods)
+        {
+            var disablePath = Path.Combine(modsFolderPath, mod.FolderName, "disable.it");
+            if (!File.Exists(disablePath))
+            {
+                EnabledMods.Add(mod);
+            }
+            else
+            {
+                DisabledMods.Add(mod);
+            }
+        }
+
         OnPropertyChanged(nameof(EnabledMods));
         OnPropertyChanged(nameof(DisabledMods));
     }
@@ -70,7 +75,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         foreach (var mod in mods)
         {
-            mod.Enabled = false;
             int index = EnabledMods.BinarySearch(mod, _comparer);
             if (index >= 0)
             {
@@ -86,7 +90,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         foreach (var mod in mods)
         {
-            mod.Enabled = true;
             int index = DisabledMods.BinarySearch(mod, _comparer);
             if (index >= 0)
             {
