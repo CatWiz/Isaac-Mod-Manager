@@ -12,9 +12,6 @@ namespace ModManager.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private string _greeting = "Welcome to Avalonia!";
-
     private string _selectedPath = string.Empty;
     public string SelectedPath
     {
@@ -43,6 +40,26 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 DisabledMods.Add(mod);
             }
+        }
+    }
+    
+    public void DisableMods(IEnumerable<Mod> mods)
+    {
+        foreach (var mod in mods)
+        {
+            mod.Enabled = false;
+            EnabledMods.Remove(mod);
+            DisabledMods.Add(mod);
+        }
+    }
+    
+    public void EnableMods(IEnumerable<Mod> mods)
+    {
+        foreach (var mod in mods)
+        {
+            mod.Enabled = true;
+            DisabledMods.Remove(mod);
+            EnabledMods.Add(mod);
         }
     }
 }

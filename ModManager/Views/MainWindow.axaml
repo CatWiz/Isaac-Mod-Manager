@@ -44,7 +44,7 @@
             </Grid>
         </Grid>
         
-        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0, 10"></Border>       
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0,10, 0, 8"></Border>       
         
         <Grid Grid.Row="2" ColumnDefinitions="*, Auto, *, Auto, 0.2*">
             <Grid.DataTemplates>
@@ -56,13 +56,28 @@
                 </DataTemplate>
             </Grid.DataTemplates>
             
-            <ListBox Grid.Column="0"
-                     SelectionMode="Multiple"
-                     ItemsSource="{Binding EnabledMods}"/>
-            <Separator Grid.Column="1" Margin="10, 0"></Separator>
-            <ListBox Grid.Column="2"
-                        SelectionMode="Multiple"
-                        ItemsSource="{Binding DisabledMods}"/>
+            <Grid Grid.Column="0" RowDefinitions="Auto, *">
+                <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
+                <ListBox Grid.Row="1"
+                         Name="EnabledModsListBox"
+                         SelectionMode="Multiple"
+                         ItemsSource="{Binding EnabledMods}">
+                </ListBox>
+            </Grid>
+            
+            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
+                <Button Padding="5, 0" Name="DisableModButton" Click="DisableModButton_OnClick">-&gt;</Button>
+                <Separator Margin="0, 10"/>
+                <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
+            </StackPanel>
+            
+            <Grid Grid.Column="2" RowDefinitions="Auto, *">
+                <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
+                <ListBox Grid.Row="1"
+                         Name="DisabledModsListBox"
+                         SelectionMode="Multiple"
+                         ItemsSource="{Binding DisabledMods}"/>
+            </Grid>
             <Separator Grid.Column="3" Margin="5, 0"></Separator>
             <StackPanel Grid.Column="4" Orientation="Vertical" VerticalAlignment="Bottom">
                 <Button Name="RefreshModsButton"

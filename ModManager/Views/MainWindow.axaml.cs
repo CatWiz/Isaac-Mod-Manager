@@ -62,4 +62,18 @@ public partial class MainWindow : Window
         }
         Vm.UpdateModsList(Vm.SelectedPath);
     }
+
+    private void DisableModButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var selectedModsIndexes = EnabledModsListBox.Selection.SelectedIndexes;
+        var selectedMods = selectedModsIndexes.Select(index => Vm.EnabledMods[index]).ToList();
+        Vm.DisableMods(selectedMods);
+    }
+
+    private void EnableModButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var selectedModsIndexes = DisabledModsListBox.Selection.SelectedIndexes;
+        var selectedMods = selectedModsIndexes.Select(index => Vm.DisabledMods[index]).ToList();
+        Vm.EnableMods(selectedMods);
+    }
 }
