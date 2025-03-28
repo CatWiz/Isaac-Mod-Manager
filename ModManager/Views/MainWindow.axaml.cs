@@ -92,4 +92,20 @@ public partial class MainWindow : Window
     {
         Vm.ApplyMods();
     }
+
+    private void EnabledModsListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count > 0)
+        {
+            DisabledModsListBox.Selection.Clear();
+        }
+    }
+
+    private void DisabledModsListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count > 0)
+        {
+            EnabledModsListBox.Selection.Clear();
+        }
+    }
 }
