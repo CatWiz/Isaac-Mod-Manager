@@ -50,13 +50,19 @@
             <Grid.DataTemplates>
                 <DataTemplate DataType="model:Mod">
                     <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Grid.Column="0" Text="{Binding FolderName, Mode=OneTime}"/>
+                        <TextBlock Grid.Column="0" Text="{Binding DisplayName, Mode=OneTime}"/>
                     </Grid>
                 </DataTemplate>
             </Grid.DataTemplates>
             
             <Grid Grid.Column="0">
-                <TextBlock Text="{Binding LastSelectedMod}"></TextBlock>
+                <StackPanel 
+                    IsVisible="{Binding LastSelectedMod, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    
+                    <TextBlock Text="{Binding LastSelectedMod.DisplayName, StringFormat='Display name: {0}' }"></TextBlock>
+                    <TextBlock Text="{Binding LastSelectedMod.FolderName, StringFormat='Folder name: {0}'}"></TextBlock>
+                    <TextBlock Text="{Binding LastSelectedMod.Metadata.Name, StringFormat='Metadata name: {0}'}"></TextBlock>
+                </StackPanel>
             </Grid>
             
             <Separator Grid.Column="1"/>

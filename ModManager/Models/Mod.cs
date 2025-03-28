@@ -9,6 +9,7 @@ namespace ModManager.Models;
 
 public record Mod(string FolderName, ModMetadata? Metadata = null)
 {
+    public string DisplayName => Metadata?.Name ?? FolderName;
     public static Mod Load(string path)
     {
         if (!Directory.Exists(path))

@@ -7,7 +7,7 @@ namespace ModManager.Models;
 public record ModMetadata
 {
     [XmlElement("name")]
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
 
     [XmlElement("directory")]
     public string Directory { get; set; } = string.Empty;
@@ -31,5 +31,5 @@ public record ModMetadata
 public record Tag
 {
     [XmlAttribute("id")]
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 }

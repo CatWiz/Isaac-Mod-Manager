@@ -17,6 +17,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private ModFolderNameComparer _comparer = new();
 
     private Settings _settings;
+    private Mod? _lastSelectedMod;
     public Settings Settings => _settings;
 
     public string GamePath
@@ -41,9 +42,18 @@ public partial class MainWindowViewModel : ViewModelBase
             UpdateModsList(_settings.GamePath);
         }
     }
-    
-    [ObservableProperty]
-    private Mod? _lastSelectedMod;
+
+    public Mod? LastSelectedMod
+    {
+        get => _lastSelectedMod;
+        set
+        {
+            if (Equals(value, _lastSelectedMod)) return;
+            _lastSelectedMod = value;
+            OnPropertyChanged();
+        }
+    }
+
     public ObservableCollection<Mod> EnabledMods { get; private set; } = new();
     public ObservableCollection<Mod> DisabledMods { get; private set; } = new();
 
@@ -67,6 +77,12 @@ public partial class MainWindowViewModel : ViewModelBase
             }
         }
 
+        var enabledList = EnabledMods.ToList();
+        enabledList.Sort(_comparer);
+        EnabledMods = new ObservableCollection<Mod>(enabledList);
+        var disabledList = DisabledMods.ToList();
+        disabledList.Sort(_comparer);
+        DisabledMods = new ObservableCollection<Mod>(disabledList);
         OnPropertyChanged(nameof(EnabledMods));
         OnPropertyChanged(nameof(DisabledMods));
     }
