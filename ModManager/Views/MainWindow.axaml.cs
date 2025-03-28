@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using ModManager.Models;
 using ModManager.ViewModels;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -17,6 +18,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        
+        Closed += (sender, args) =>
+        {
+            Vm.Settings.Save(Settings.DefaultPath);
+        };
     }
 
     private async void SelectGamePathButton_OnClick(object? sender, RoutedEventArgs e)
@@ -39,18 +45,23 @@ public partial class MainWindow : Window
             {
                 selectedPath = selectedPath.Replace("%20", " ");
                 var gameExecutablePath = Path.Combine(selectedPath, "isaac-ng.exe");
-                Vm.SelectedPath = File.Exists(gameExecutablePath) ? selectedPath : "Invalid path";
+                Vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : "Invalid path";
             }
         }
         catch (InvalidOperationException exception)
         {
-            Vm.SelectedPath = "Invalid path";
+            // show a message box
+            var box = MessageBoxManager.GetMessageBoxStandard(
+            "Error",
+            "Invalid path"
+            );
+            await box.ShowAsync();
         }
     }
     
     private void RefreshModsButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrEmpty(Vm.SelectedPath) || Vm.SelectedPath == "Invalid path")
+        if (string.IsNullOrEmpty(Vm.GamePath) || Vm.GamePath == "Invalid path")
         {
             // show a message box
             var box = MessageBoxManager.GetMessageBoxStandard(
@@ -60,7 +71,7 @@ public partial class MainWindow : Window
             box.ShowAsync();
             return;
         }
-        Vm.UpdateModsList(Vm.SelectedPath);
+        Vm.UpdateModsList(Vm.GamePath);
     }
 
     private void DisableModButton_OnClick(object? sender, RoutedEventArgs e)

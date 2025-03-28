@@ -14,35 +14,45 @@ namespace ModManager.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private string _selectedPath = string.Empty;
-    private ObservableCollection<Mod> _enabledMods = new();
-    private ObservableCollection<Mod> _disabledMods = new();
-
-    public string SelectedPath
+    private class ModFolderNameComparer : Comparer<Mod>
     {
-        get => string.IsNullOrEmpty(_selectedPath) ? "" : _selectedPath;
-        set => SetProperty(ref _selectedPath, value);
+        public override int Compare(Mod? x, Mod? y)
+        {
+            if (x == null || y == null) return 0;
+            return string.Compare(x.FolderName, y.FolderName, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
-    public ObservableCollection<Mod> EnabledMods
+    private ModFolderNameComparer _comparer = new();
+
+    private Settings _settings;
+    public Settings Settings => _settings;
+
+    public string GamePath
     {
-        get => _enabledMods;
-        private set
+        get => _settings.GamePath;
+        set
         {
-            _enabledMods = new ObservableCollection<Mod>(value.OrderBy(m => m.FolderName));
+            _settings.GamePath = value;
             OnPropertyChanged();
         }
     }
 
-    public ObservableCollection<Mod> DisabledMods
+    public MainWindowViewModel()
     {
-        get => _disabledMods;
-        private set
+        _settings = new Settings();
+    }
+    public MainWindowViewModel(Settings settings)
+    {
+        _settings = settings;
+        if (!string.IsNullOrEmpty(_settings.GamePath))
         {
-            _disabledMods = new ObservableCollection<Mod>(value.OrderBy(m => m.FolderName));
-            OnPropertyChanged();
+            UpdateModsList(_settings.GamePath);
         }
     }
+
+    public ObservableCollection<Mod> EnabledMods { get; private set; } = new();
+    public ObservableCollection<Mod> DisabledMods { get; private set; } = new();
 
     public void UpdateModsList(string basePath)
     {
@@ -51,6 +61,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
         EnabledMods = new ObservableCollection<Mod>(mods.Where(m => m.Enabled));
         DisabledMods = new ObservableCollection<Mod>(mods.Where(m => !m.Enabled));
+        
+        OnPropertyChanged(nameof(EnabledMods));
+        OnPropertyChanged(nameof(DisabledMods));
     }
     
     public void DisableMods(IEnumerable<Mod> mods)
@@ -58,11 +71,15 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (var mod in mods)
         {
             mod.Enabled = false;
-            EnabledMods.Remove(mod);
-            DisabledMods.Add(mod);
+            int index = EnabledMods.BinarySearch(mod, _comparer);
+            if (index >= 0)
+            {
+                EnabledMods.Remove(mod);
+            }
+            DisabledMods.BinaryInsert(mod, _comparer);
         }
-        // Trigger the OnPropertyChanged event
-        DisabledMods = DisabledMods;
+        OnPropertyChanged(nameof(EnabledMods));
+        OnPropertyChanged(nameof(DisabledMods));
     }
     
     public void EnableMods(IEnumerable<Mod> mods)
@@ -70,10 +87,14 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (var mod in mods)
         {
             mod.Enabled = true;
-            DisabledMods.Remove(mod);
-            EnabledMods.Add(mod);
+            int index = DisabledMods.BinarySearch(mod, _comparer);
+            if (index >= 0)
+            {
+                DisabledMods.Remove(mod);
+            }
+            EnabledMods.BinaryInsert(mod, _comparer);
         }
-        // Trigger the OnPropertyChanged event
-        EnabledMods = EnabledMods;
+        OnPropertyChanged(nameof(EnabledMods));
+        OnPropertyChanged(nameof(DisabledMods));
     }
 }

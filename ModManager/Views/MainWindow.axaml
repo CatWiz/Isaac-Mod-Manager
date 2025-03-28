@@ -34,7 +34,7 @@
                     Classes="readonly"
                     HorizontalAlignment="Stretch"
                     Watermark="No game path selected"
-                    Text="{Binding Path=SelectedPath, Mode=OneWay}"/>
+                    Text="{Binding Path=GamePath, Mode=OneWay}"/>
                 
                 <Button Grid.Column="1" Name="SelectGamePathButton"
                         Click="SelectGamePathButton_OnClick"
