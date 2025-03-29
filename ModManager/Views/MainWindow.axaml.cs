@@ -62,7 +62,7 @@ public partial class MainWindow : Window
     
     private void RefreshModsButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrEmpty(Vm.GamePath) || Vm.GamePath == "Invalid path")
+        if (string.IsNullOrEmpty(Vm.GamePath))
         {
             // show a message box
             var box = MessageBoxManager.GetMessageBoxStandard(
