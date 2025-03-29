@@ -104,6 +104,17 @@
                         Click="ApplyModsButton_OnClick">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
                 </Button>
+                <Separator Margin="0, 5"/>
+                <Button Name="SaveModListButton"
+                        Click="SaveModListButton_OnClick">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Save Modlist</TextBlock>
+                </Button>
+                <Separator Margin="0, 5"/>
+                <Button Name="LoadModListButton"
+                        Click="LoadModListButton_OnClick">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Modlist</TextBlock>
+                </Button>
+
             </StackPanel>
         </Grid>
     </Grid>

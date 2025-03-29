@@ -12,7 +12,14 @@ namespace ModManager.Models;
 public class Settings : INotifyPropertyChanged
 {
     [JsonIgnore]
-    public static string DefaultPath = Path.Combine(AppContext.BaseDirectory, "settings.json");
+    public static readonly string DefaultPath = Path.Combine(AppContext.BaseDirectory, "settings.json");
+    
+    [JsonIgnore]
+    public static readonly string ModListPath = Path.Combine(AppContext.BaseDirectory, "modlists");
+    
+    [JsonIgnore]
+    public string ModsPath => Path.Combine(GamePath, "mods");
+    
     private string _gamePath = string.Empty;
 
     [JsonInclude]

@@ -46,7 +46,7 @@ public partial class MainWindow : Window
                 selectedPath = selectedPath.Replace("%20", " ");
                 var gameExecutablePath = Path.Combine(selectedPath, "isaac-ng.exe");
                 Vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : string.Empty;
-                Vm.UpdateModsList(Vm.GamePath);
+                Vm.UpdateModsList();
             }
         }
         catch (InvalidOperationException exception)
@@ -72,7 +72,7 @@ public partial class MainWindow : Window
             box.ShowAsync();
             return;
         }
-        Vm.UpdateModsList(Vm.GamePath);
+        Vm.UpdateModsList();
     }
 
     private void DisableModButton_OnClick(object? sender, RoutedEventArgs e)
@@ -120,5 +120,36 @@ public partial class MainWindow : Window
                 Vm.LastSelectedMod = lastSelected;
             }
         }
+    }
+
+    private async void SaveModListButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var storageProvider = StorageProvider;
+        if (!storageProvider.CanSave) return;
+
+        if (!Directory.Exists(Settings.ModListPath))
+        {
+            Directory.CreateDirectory(Settings.ModListPath);
+        }
+
+        var modListFolder = await storageProvider.TryGetFolderFromPathAsync(Settings.ModListPath);
+        var storageFile = await storageProvider.SaveFilePickerAsync(new()
+        {
+            Title = "Save the mod list",
+            DefaultExtension = "txt",
+            ShowOverwritePrompt = true,
+            SuggestedStartLocation = modListFolder,
+            SuggestedFileName = "modlist"
+        });
+        
+        if (storageFile == null) return;
+
+        await using var writeStream = await storageFile.OpenWriteAsync();
+        Vm.SaveCurrentModList(writeStream);
+    }
+
+    private void LoadModListButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 }

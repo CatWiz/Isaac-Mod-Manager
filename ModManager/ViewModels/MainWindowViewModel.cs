@@ -39,7 +39,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _settings = settings;
         if (!string.IsNullOrEmpty(_settings.GamePath))
         {
-            UpdateModsList(_settings.GamePath);
+            UpdateModsList();
         }
     }
 
@@ -57,9 +57,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<Mod> EnabledMods { get; private set; } = new();
     public ObservableCollection<Mod> DisabledMods { get; private set; } = new();
 
-    public void UpdateModsList(string basePath)
+    public void UpdateModsList()
     {
-        var modsFolderPath = Path.Combine(basePath, "mods");
+        var modsFolderPath = Settings.ModsPath;
         var mods = Mod.GetModsList(modsFolderPath);
         
         EnabledMods.Clear();
@@ -136,5 +136,40 @@ public partial class MainWindowViewModel : ViewModelBase
                 File.Create(disablePath).Close();
             }
         }
+    }
+
+    public void LoadModList(List<Mod> mods)
+    {
+        EnabledMods.Clear();
+        DisabledMods.Clear();
+        
+        var modsList = Mod.GetModsList(Settings.ModsPath);
+        foreach (var mod in modsList)
+        {
+            if (mods.Contains(mod))
+            {
+                EnabledMods.Add(mod);
+            }
+            else
+            {
+                DisabledMods.Add(mod);                
+            }
+        }
+        
+        OnPropertyChanged(nameof(EnabledMods));
+        OnPropertyChanged(nameof(DisabledMods));
+    }
+
+    private void SaveModList(IEnumerable<Mod> mods, Stream stream)
+    {
+        var modsStr = string.Join(Environment.NewLine, mods.Select(mod => mod.FolderName).Order());
+        
+        using var writer = new StreamWriter(stream);
+        writer.Write(modsStr);
+    }
+
+    public void SaveCurrentModList(Stream stream)
+    {
+        SaveModList(EnabledMods, stream);
     }
 }
