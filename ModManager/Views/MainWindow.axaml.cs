@@ -98,42 +98,40 @@ public partial class MainWindow : Window
 
     private void EnabledModsListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (e.AddedItems.Count > 0)
+        if (e.AddedItems.Count <= 0) return;
+        
+        DisabledModsListBox.Selection.Clear();
+        var lastSelected = EnabledModsListBox.SelectedItems?.OfType<Mod>().Last();
+        if (lastSelected != null)
         {
-            DisabledModsListBox.Selection.Clear();
-            var lastSelected = EnabledModsListBox.SelectedItems?.OfType<Mod>().Last();
-            if (lastSelected != null)
-            {
-                Vm.LastSelectedMod = lastSelected;
-            }
+            Vm.LastSelectedMod = lastSelected;
         }
     }
 
     private void DisabledModsListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (e.AddedItems.Count > 0)
+        if (e.AddedItems.Count <= 0) return;
+        
+        EnabledModsListBox.Selection.Clear();
+        var lastSelected = DisabledModsListBox.SelectedItems?.OfType<Mod>().Last();
+        if (lastSelected != null)
         {
-            EnabledModsListBox.Selection.Clear();
-            var lastSelected = DisabledModsListBox.SelectedItems?.OfType<Mod>().Last();
-            if (lastSelected != null)
-            {
-                Vm.LastSelectedMod = lastSelected;
-            }
+            Vm.LastSelectedMod = lastSelected;
         }
     }
 
     private async void SaveModListButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        var storageProvider = StorageProvider;
-        if (!storageProvider.CanSave) return;
+        var provider = StorageProvider;
+        if (!provider.CanSave) return;
 
         if (!Directory.Exists(Settings.ModListPath))
         {
             Directory.CreateDirectory(Settings.ModListPath);
         }
 
-        var modListFolder = await storageProvider.TryGetFolderFromPathAsync(Settings.ModListPath);
-        var storageFile = await storageProvider.SaveFilePickerAsync(new()
+        var modListFolder = await provider.TryGetFolderFromPathAsync(Settings.ModListPath);
+        var storageFile = await provider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save the mod list",
             DefaultExtension = "txt",
