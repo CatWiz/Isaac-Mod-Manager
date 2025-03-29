@@ -14,6 +14,10 @@ namespace ModManager.Views;
 
 public partial class MainWindow : Window
 {
+    private readonly FilePickerFileType[] _openModlistFilePickerFileTypes =
+    {
+        new("Text files") { Patterns = new [] {"*.txt"} }
+    };
     private MainWindowViewModel Vm => DataContext as MainWindowViewModel ?? throw new System.InvalidCastException();
     public MainWindow()
     {
@@ -21,7 +25,7 @@ public partial class MainWindow : Window
         
         Closed += (sender, args) =>
         {
-            Vm.Settings.Save(Settings.DefaultPath);
+            Vm.Settings.Save(Settings.DefaultStoragePath);
         };
     }
 
@@ -146,8 +150,30 @@ public partial class MainWindow : Window
         Vm.SaveCurrentModList(writeStream);
     }
 
-    private void LoadModListButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void LoadModListButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var defaultPath = Settings.ModListPath;
+        if (!Directory.Exists(defaultPath))
+        {
+            defaultPath = Settings.DefaultStoragePath;
+        }
+        
+        var provider = StorageProvider;
+        if (!provider.CanOpen) return;
+        
+        var modListFolder = await provider.TryGetFolderFromPathAsync(defaultPath);
+        var selection = await provider.OpenFilePickerAsync(new FilePickerOpenOptions()
+        {
+            Title = "Select the mod list",
+            AllowMultiple = false,
+            SuggestedStartLocation = modListFolder,
+            FileTypeFilter = _openModlistFilePickerFileTypes
+        });
+
+        var storageFile = selection.FirstOrDefault();
+        if (storageFile == null) return;
+        
+        await using var readStream = await storageFile.OpenReadAsync();
+        Vm.LoadModList(readStream);
     }
 }

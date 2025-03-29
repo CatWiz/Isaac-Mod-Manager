@@ -112,9 +112,8 @@
                 <Separator Margin="0, 5"/>
                 <Button Name="LoadModListButton"
                         Click="LoadModListButton_OnClick">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Modlist</TextBlock>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Load Modlist</TextBlock>
                 </Button>
-
             </StackPanel>
         </Grid>
     </Grid>

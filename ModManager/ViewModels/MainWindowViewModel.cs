@@ -138,15 +138,16 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public void LoadModList(List<Mod> mods)
+    public void LoadModList(IEnumerable<string> modFolders)
     {
         EnabledMods.Clear();
         DisabledMods.Clear();
-        
+
+        var modsToEnable = new HashSet<string>(modFolders);
         var modsList = Mod.GetModsList(Settings.ModsPath);
         foreach (var mod in modsList)
         {
-            if (mods.Contains(mod))
+            if (modsToEnable.Contains(mod.FolderName))
             {
                 EnabledMods.Add(mod);
             }
@@ -158,6 +159,13 @@ public partial class MainWindowViewModel : ViewModelBase
         
         OnPropertyChanged(nameof(EnabledMods));
         OnPropertyChanged(nameof(DisabledMods));
+    }
+
+    public void LoadModList(Stream stream)
+    {
+        var reader = new StreamReader(stream);
+        var modFolders = reader.ReadToEnd().Split(Environment.NewLine);
+        LoadModList(modFolders.ToList());        
     }
 
     private void SaveModList(IEnumerable<Mod> mods, Stream stream)
