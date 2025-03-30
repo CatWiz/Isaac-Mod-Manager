@@ -61,9 +61,16 @@
                 <StackPanel 
                     IsVisible="{Binding LastSelectedMod, Converter={x:Static ObjectConverters.IsNotNull}}">
                     
-                    <TextBlock Text="{Binding LastSelectedMod.DisplayName, StringFormat='Display name: {0}' }"></TextBlock>
-                    <TextBlock Text="{Binding LastSelectedMod.FolderName, StringFormat='Folder name: {0}'}"></TextBlock>
-                    <TextBlock Text="{Binding LastSelectedMod.Metadata.Name, StringFormat='Metadata name: {0}'}"></TextBlock>
+                    <TextBlock 
+                        Text="{Binding 
+                        LastSelectedMod.DisplayName, 
+                        StringFormat='Display name: {0}', FallbackValue='none' }"/>
+                    <TextBlock 
+                        Text="{Binding LastSelectedMod.FolderName, 
+                        StringFormat='Folder name: {0}', FallbackValue='none'}"/>
+                    <TextBlock 
+                        Text="{Binding LastSelectedMod.Metadata.Name,
+                        StringFormat='Metadata name: {0}', FallbackValue='none'}"/>
                 </StackPanel>
             </Grid>
             
