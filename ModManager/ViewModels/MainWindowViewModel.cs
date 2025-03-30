@@ -72,10 +72,6 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
     public MainWindowViewModel(Settings settings)
     {
         _settings = settings;
-        if (!string.IsNullOrEmpty(_settings.GamePath))
-        {
-            UpdateModsList();
-        }
         Initialize();
     }
 

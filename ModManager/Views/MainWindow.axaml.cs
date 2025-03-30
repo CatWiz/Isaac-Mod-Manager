@@ -27,6 +27,23 @@ public partial class MainWindow : Window
         {
             _vm.Settings.Save(Settings.DefaultStoragePath);
         };
+        
+        if (!string.IsNullOrEmpty(_vm.GamePath))
+        {
+            try
+            {
+                _vm.UpdateModsList();
+            }
+            catch (Exception e)
+            {
+                // show a message box
+                var box = MessageBoxManager.GetMessageBoxStandard(
+                "Error",
+                "An error occurred while updating the mods list: " + e.Message
+                );
+                box.ShowAsync();
+            }
+        }
     }
 
     private async void SelectGamePathButton_OnClick(object? sender, RoutedEventArgs e)
