@@ -4,15 +4,18 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData;
+using DynamicData.Binding;
 using ModManager.Models;
 using Tmds.DBus.Protocol;
 
 namespace ModManager.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
     private ModFolderNameComparer _comparer = new();
 
@@ -30,19 +33,6 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public MainWindowViewModel()
-    {
-        _settings = new Settings();
-    }
-    public MainWindowViewModel(Settings settings)
-    {
-        _settings = settings;
-        if (!string.IsNullOrEmpty(_settings.GamePath))
-        {
-            UpdateModsList();
-        }
-    }
-
     public Mod? LastSelectedMod
     {
         get => _lastSelectedMod;
@@ -54,73 +44,99 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public ObservableCollection<Mod> EnabledMods { get; private set; } = new();
-    public ObservableCollection<Mod> DisabledMods { get; private set; } = new();
+    private readonly SourceList<Mod> _enabledMods = new();
+    private readonly SourceList<Mod> _disabledMods = new();
 
+    private ReadOnlyObservableCollection<Mod> _sortedEnabledMods = null!;
+    private ReadOnlyObservableCollection<Mod> _sortedDisabledMods = null!;
+    
+    public ReadOnlyObservableCollection<Mod> SortedEnabledMods => _sortedEnabledMods;
+    public ReadOnlyObservableCollection<Mod> SortedDisabledMods => _sortedDisabledMods;
+    
+    private IDisposable _sortedEnabledModsDisposable = null!;
+    private IDisposable _sortedDisabledModsDisposable = null!;
+
+    private void Initialize()
+    {
+        _sortedEnabledModsDisposable = _enabledMods
+            .Connect()
+            .Sort(_comparer)
+            .Bind(out _sortedEnabledMods)
+            .Subscribe();
+        
+        _sortedDisabledModsDisposable = _disabledMods
+            .Connect()
+            .Sort(_comparer)
+            .Bind(out _sortedDisabledMods)
+            .Subscribe();
+    }
+    
+    public MainWindowViewModel()
+    {
+        _settings = new Settings();
+        Initialize();
+    }
+    public MainWindowViewModel(Settings settings)
+    {
+        _settings = settings;
+        if (!string.IsNullOrEmpty(_settings.GamePath))
+        {
+            UpdateModsList();
+        }
+        Initialize();
+    }
+
+    
+    #region ModManagementCommands
     public void UpdateModsList()
     {
         var modsFolderPath = Settings.ModsPath;
         var mods = Mod.GetModsList(modsFolderPath);
         
-        EnabledMods.Clear();
-        DisabledMods.Clear();
+        _enabledMods.Clear();
+        _disabledMods.Clear();
         foreach (var mod in mods)
         {
             var disablePath = Path.Combine(modsFolderPath, mod.FolderName, "disable.it");
             if (!File.Exists(disablePath))
             {
-                EnabledMods.Add(mod);
+                _enabledMods.Add(mod);
             }
             else
             {
-                DisabledMods.Add(mod);
+                _disabledMods.Add(mod);
             }
         }
-
-        var enabledList = EnabledMods.ToList();
-        enabledList.Sort(_comparer);
-        EnabledMods = new ObservableCollection<Mod>(enabledList);
-        var disabledList = DisabledMods.ToList();
-        disabledList.Sort(_comparer);
-        DisabledMods = new ObservableCollection<Mod>(disabledList);
-        OnPropertyChanged(nameof(EnabledMods));
-        OnPropertyChanged(nameof(DisabledMods));
     }
     
     public void DisableMods(IEnumerable<Mod> mods)
     {
         foreach (var mod in mods)
         {
-            int index = EnabledMods.BinarySearch(mod, _comparer);
-            if (index >= 0)
+            if (_enabledMods.Items.Contains(mod, _comparer))
             {
-                EnabledMods.Remove(mod);
+                _enabledMods.Remove(mod);
             }
-            DisabledMods.BinaryInsert(mod, _comparer);
+            _disabledMods.Add(mod);
         }
-        OnPropertyChanged(nameof(EnabledMods));
-        OnPropertyChanged(nameof(DisabledMods));
     }
     
     public void EnableMods(IEnumerable<Mod> mods)
     {
         foreach (var mod in mods)
         {
-            int index = DisabledMods.BinarySearch(mod, _comparer);
-            if (index >= 0)
+            if (_disabledMods.Items.Contains(mod, _comparer))
             {
-                DisabledMods.Remove(mod);
+                _disabledMods.Remove(mod);
             }
-            EnabledMods.BinaryInsert(mod, _comparer);
+            _enabledMods.Add(mod);
         }
-        OnPropertyChanged(nameof(EnabledMods));
-        OnPropertyChanged(nameof(DisabledMods));
     }
 
     public void ApplyMods()
     {
         var modsFolderPath = Path.Combine(GamePath, "mods");
-        foreach (var mod in EnabledMods)
+        foreach (var mod in _enabledMods.Items)
         {
             var disablePath = Path.Combine(modsFolderPath, mod.FolderName, "disable.it");
             if (File.Exists(disablePath))
@@ -128,7 +144,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 File.Delete(disablePath);
             }
         }
-        foreach (var mod in DisabledMods)
+        foreach (var mod in _disabledMods.Items)
         {
             var disablePath = Path.Combine(modsFolderPath, mod.FolderName, "disable.it");
             if (!File.Exists(disablePath))
@@ -140,8 +156,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public void LoadModList(IEnumerable<string> modFolders)
     {
-        EnabledMods.Clear();
-        DisabledMods.Clear();
+        _enabledMods.Clear();
+        _disabledMods.Clear();
 
         var modsToEnable = new HashSet<string>(modFolders);
         var modsList = Mod.GetModsList(Settings.ModsPath);
@@ -149,16 +165,13 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (modsToEnable.Contains(mod.FolderName))
             {
-                EnabledMods.Add(mod);
+                _enabledMods.Add(mod);
             }
             else
             {
-                DisabledMods.Add(mod);                
+                _disabledMods.Add(mod);                
             }
         }
-        
-        OnPropertyChanged(nameof(EnabledMods));
-        OnPropertyChanged(nameof(DisabledMods));
     }
 
     public void LoadModList(Stream stream)
@@ -178,6 +191,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public void SaveCurrentModList(Stream stream)
     {
-        SaveModList(EnabledMods, stream);
+        SaveModList(_enabledMods.Items, stream);
+    }
+    #endregion
+
+    public void Dispose()
+    {
+        _sortedEnabledModsDisposable.Dispose();
+        _sortedDisabledModsDisposable.Dispose();
+        _enabledMods.Dispose();
+        _disabledMods.Dispose();
     }
 }

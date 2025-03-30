@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using DynamicData;
+using DynamicData.Binding;
 using ModManager.Models;
 using ModManager.ViewModels;
 using MsBox.Avalonia;

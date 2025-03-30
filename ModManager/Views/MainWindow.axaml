@@ -74,7 +74,7 @@
                 <ListBox Grid.Row="1"
                          Name="EnabledModsListBox"
                          SelectionMode="Multiple"
-                         ItemsSource="{Binding EnabledMods}"
+                         ItemsSource="{Binding SortedEnabledMods}"
                          SelectionChanged="EnabledModsListBox_OnSelectionChanged">
                 </ListBox>
             </Grid>
@@ -90,7 +90,7 @@
                 <ListBox Grid.Row="1"
                          Name="DisabledModsListBox"
                          SelectionMode="Multiple"
-                         ItemsSource="{Binding DisabledMods}"
+                         ItemsSource="{Binding SortedDisabledMods}"
                          SelectionChanged="DisabledModsListBox_OnSelectionChanged"/>
             </Grid>
             <Separator Grid.Column="5" Margin="5, 0"></Separator>
