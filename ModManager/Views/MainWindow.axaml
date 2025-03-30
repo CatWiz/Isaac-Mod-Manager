@@ -76,9 +76,12 @@
             
             <Separator Grid.Column="1"/>
             
-            <Grid Grid.Column="2" RowDefinitions="Auto, *">
+            <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *">
                 <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
-                <ListBox Grid.Row="1"
+                <TextBox Grid.Row="1" Name="EnabledModsSearchTextBox"
+                         Text="{Binding EnabledModsSearchText, Mode=OneWayToSource}"
+                         Watermark="Search mods" />
+                <ListBox Grid.Row="2"
                          Name="EnabledModsListBox"
                          SelectionMode="Multiple"
                          ItemsSource="{Binding SortedEnabledMods}"
@@ -92,9 +95,12 @@
                 <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
             </StackPanel>
             
-            <Grid Grid.Column="4" RowDefinitions="Auto, *">
+            <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *">
                 <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
-                <ListBox Grid.Row="1"
+                <TextBox Grid.Row="1" Name="DisabledModsSearchTextBox"
+                         Text="{Binding DisabledModsSearchText, Mode=OneWayToSource}"
+                         Watermark="Search mods" />
+                <ListBox Grid.Row="2"
                          Name="DisabledModsListBox"
                          SelectionMode="Multiple"
                          ItemsSource="{Binding SortedDisabledMods}"

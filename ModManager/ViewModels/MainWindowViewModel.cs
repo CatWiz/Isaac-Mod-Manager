@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using DynamicData;
+using DynamicData.Aggregation;
+using DynamicData.Binding;
 using ModManager.Models;
+using ReactiveUI;
 
 namespace ModManager.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase, IDisposable
+public class MainWindowViewModel : ReactiveObject, IDisposable
 {
     private readonly ModFolderNameComparer _comparer = new();
 
@@ -22,20 +26,23 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
         set
         {
             _settings.GamePath = value;
-            OnPropertyChanged();
+            this.RaisePropertyChanged();
         }
     }
 
     public Mod? LastSelectedMod
     {
         get => _lastSelectedMod;
-        set
-        {
-            if (Equals(value, _lastSelectedMod)) return;
-            _lastSelectedMod = value;
-            OnPropertyChanged();
-        }
+        set => this.RaiseAndSetIfChanged(ref _lastSelectedMod, value);
     }
+
+    public string EnabledModsSearchText
+    {
+        get => _enabledModsSearchText;
+        set => this.RaiseAndSetIfChanged(ref _enabledModsSearchText, value);
+    }
+
+    public string DisabledModsSearchText { get; set; } = string.Empty;
 
     private readonly SourceList<Mod> _enabledMods = new();
     private readonly SourceList<Mod> _disabledMods = new();
@@ -48,17 +55,36 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
     
     private IDisposable _sortedEnabledModsDisposable = null!;
     private IDisposable _sortedDisabledModsDisposable = null!;
-
+    private string _enabledModsSearchText = string.Empty;
+    
     private void Initialize()
     {
+        var enabledModsFilter = this
+            .WhenAnyValue(vm => vm.EnabledModsSearchText)
+            .Select(searchText => (Func<Mod, bool>)(mod =>
+                    string.IsNullOrWhiteSpace(searchText) ||
+                    mod.DisplayName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                ))
+            .StartWith((Func<Mod, bool>)(mod => true)); // Initial filter allows all
+        
         _sortedEnabledModsDisposable = _enabledMods
             .Connect()
+            .Filter(enabledModsFilter)
             .Sort(_comparer)
             .Bind(out _sortedEnabledMods)
             .Subscribe();
         
+        var disabledModsFilter = this
+            .WhenAnyValue(vm => vm.DisabledModsSearchText)
+            .Select(searchText => (Func<Mod, bool>)(mod =>
+                    string.IsNullOrWhiteSpace(searchText) ||
+                    mod.DisplayName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                ))
+            .StartWith((Func<Mod, bool>)(mod => true)); // Initial filter allows all
+        
         _sortedDisabledModsDisposable = _disabledMods
             .Connect()
+            .Filter(disabledModsFilter)
             .Sort(_comparer)
             .Bind(out _sortedDisabledMods)
             .Subscribe();
