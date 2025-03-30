@@ -42,7 +42,11 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
         set => this.RaiseAndSetIfChanged(ref _enabledModsSearchText, value);
     }
 
-    public string DisabledModsSearchText { get; set; } = string.Empty;
+    public string DisabledModsSearchText
+    {
+        get => _disabledModsSearchText;
+        set => this.RaiseAndSetIfChanged(ref _disabledModsSearchText, value);
+    }
 
     private readonly SourceList<Mod> _enabledMods = new();
     private readonly SourceList<Mod> _disabledMods = new();
@@ -56,7 +60,8 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
     private IDisposable _sortedEnabledModsDisposable = null!;
     private IDisposable _sortedDisabledModsDisposable = null!;
     private string _enabledModsSearchText = string.Empty;
-    
+    private string _disabledModsSearchText = string.Empty;
+
     private void Initialize()
     {
         var enabledModsFilter = this
