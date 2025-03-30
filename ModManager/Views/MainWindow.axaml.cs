@@ -18,14 +18,16 @@ public partial class MainWindow : Window
     {
         new("Text files") { Patterns = new [] {"*.txt"} }
     };
-    private MainWindowViewModel Vm => DataContext as MainWindowViewModel ?? throw new System.InvalidCastException();
-    public MainWindow()
+    
+    private readonly MainWindowViewModel _vm;
+    public MainWindow(MainWindowViewModel vm)
     {
         InitializeComponent();
         
+        DataContext = _vm = vm;
         Closed += (sender, args) =>
         {
-            Vm.Settings.Save(Settings.DefaultStoragePath);
+            _vm.Settings.Save(Settings.DefaultStoragePath);
         };
     }
 
@@ -49,8 +51,8 @@ public partial class MainWindow : Window
             {
                 selectedPath = selectedPath.Replace("%20", " ");
                 var gameExecutablePath = Path.Combine(selectedPath, "isaac-ng.exe");
-                Vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : string.Empty;
-                Vm.UpdateModsList();
+                _vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : string.Empty;
+                _vm.UpdateModsList();
             }
         }
         catch (InvalidOperationException exception)
@@ -66,7 +68,7 @@ public partial class MainWindow : Window
     
     private void RefreshModsButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrEmpty(Vm.GamePath))
+        if (string.IsNullOrEmpty(_vm.GamePath))
         {
             // show a message box
             var box = MessageBoxManager.GetMessageBoxStandard(
@@ -76,28 +78,28 @@ public partial class MainWindow : Window
             box.ShowAsync();
             return;
         }
-        Vm.UpdateModsList();
+        _vm.UpdateModsList();
     }
 
     private void DisableModButton_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedModsIndexes = EnabledModsListBox.Selection.SelectedIndexes;
-        var selectedMods = selectedModsIndexes.Select(index => Vm.EnabledMods[index]).ToList();
-        Vm.DisableMods(selectedMods);
-        Vm.LastSelectedMod = null;
+        var selectedMods = selectedModsIndexes.Select(index => _vm.EnabledMods[index]).ToList();
+        _vm.DisableMods(selectedMods);
+        _vm.LastSelectedMod = null;
     }
 
     private void EnableModButton_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedModsIndexes = DisabledModsListBox.Selection.SelectedIndexes;
-        var selectedMods = selectedModsIndexes.Select(index => Vm.DisabledMods[index]).ToList();
-        Vm.EnableMods(selectedMods);
-        Vm.LastSelectedMod = null;
+        var selectedMods = selectedModsIndexes.Select(index => _vm.DisabledMods[index]).ToList();
+        _vm.EnableMods(selectedMods);
+        _vm.LastSelectedMod = null;
     }
 
     private void ApplyModsButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        Vm.ApplyMods();
+        _vm.ApplyMods();
     }
 
     private void EnabledModsListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -108,7 +110,7 @@ public partial class MainWindow : Window
         var lastSelected = EnabledModsListBox.SelectedItems?.OfType<Mod>().Last();
         if (lastSelected != null)
         {
-            Vm.LastSelectedMod = lastSelected;
+            _vm.LastSelectedMod = lastSelected;
         }
     }
 
@@ -120,7 +122,7 @@ public partial class MainWindow : Window
         var lastSelected = DisabledModsListBox.SelectedItems?.OfType<Mod>().Last();
         if (lastSelected != null)
         {
-            Vm.LastSelectedMod = lastSelected;
+            _vm.LastSelectedMod = lastSelected;
         }
     }
 
@@ -147,7 +149,7 @@ public partial class MainWindow : Window
         if (storageFile == null) return;
 
         await using var writeStream = await storageFile.OpenWriteAsync();
-        Vm.SaveCurrentModList(writeStream);
+        _vm.SaveCurrentModList(writeStream);
     }
 
     private async void LoadModListButton_OnClick(object? sender, RoutedEventArgs e)
@@ -174,6 +176,6 @@ public partial class MainWindow : Window
         if (storageFile == null) return;
         
         await using var readStream = await storageFile.OpenReadAsync();
-        Vm.LoadModList(readStream);
+        _vm.LoadModList(readStream);
     }
 }

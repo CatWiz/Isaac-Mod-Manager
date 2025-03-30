@@ -27,10 +27,7 @@ public partial class App : Application
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
             var settings = Settings.Load(Settings.DefaultStoragePath);
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(settings),
-            };
+            desktop.MainWindow = new MainWindow(new MainWindowViewModel(settings));
         }
 
         base.OnFrameworkInitializationCompleted();
