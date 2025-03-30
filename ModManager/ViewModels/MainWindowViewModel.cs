@@ -36,74 +36,23 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
         set => this.RaiseAndSetIfChanged(ref _lastSelectedMod, value);
     }
 
-    public string EnabledModsSearchText
-    {
-        get => _enabledModsSearchText;
-        set => this.RaiseAndSetIfChanged(ref _enabledModsSearchText, value);
-    }
-
-    public string DisabledModsSearchText
-    {
-        get => _disabledModsSearchText;
-        set => this.RaiseAndSetIfChanged(ref _disabledModsSearchText, value);
-    }
-
     private readonly SourceList<Mod> _enabledMods = new();
     private readonly SourceList<Mod> _disabledMods = new();
 
-    private ReadOnlyObservableCollection<Mod> _sortedEnabledMods = null!;
-    private ReadOnlyObservableCollection<Mod> _sortedDisabledMods = null!;
-    
-    public ReadOnlyObservableCollection<Mod> SortedEnabledMods => _sortedEnabledMods;
-    public ReadOnlyObservableCollection<Mod> SortedDisabledMods => _sortedDisabledMods;
-    
-    private IDisposable _sortedEnabledModsDisposable = null!;
-    private IDisposable _sortedDisabledModsDisposable = null!;
-    private string _enabledModsSearchText = string.Empty;
-    private string _disabledModsSearchText = string.Empty;
-
-    private void Initialize()
-    {
-        var enabledModsFilter = this
-            .WhenAnyValue(vm => vm.EnabledModsSearchText)
-            .Select(searchText => (Func<Mod, bool>)(mod =>
-                    string.IsNullOrWhiteSpace(searchText) ||
-                    mod.DisplayName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-                ))
-            .StartWith((Func<Mod, bool>)(mod => true)); // Initial filter allows all
-        
-        _sortedEnabledModsDisposable = _enabledMods
-            .Connect()
-            .Filter(enabledModsFilter)
-            .Sort(_comparer)
-            .Bind(out _sortedEnabledMods)
-            .Subscribe();
-        
-        var disabledModsFilter = this
-            .WhenAnyValue(vm => vm.DisabledModsSearchText)
-            .Select(searchText => (Func<Mod, bool>)(mod =>
-                    string.IsNullOrWhiteSpace(searchText) ||
-                    mod.DisplayName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-                ))
-            .StartWith((Func<Mod, bool>)(mod => true)); // Initial filter allows all
-        
-        _sortedDisabledModsDisposable = _disabledMods
-            .Connect()
-            .Filter(disabledModsFilter)
-            .Sort(_comparer)
-            .Bind(out _sortedDisabledMods)
-            .Subscribe();
-    }
+    public SearchableSortedModListViewModel SortedEnabledModsVm { get; }
+    public SearchableSortedModListViewModel SortedDisabledModsVm { get; }
     
     public MainWindowViewModel()
     {
         _settings = new Settings();
-        Initialize();
+        SortedEnabledModsVm = new SearchableSortedModListViewModel(_enabledMods, _comparer);
+        SortedDisabledModsVm = new SearchableSortedModListViewModel(_disabledMods, _comparer);
     }
     public MainWindowViewModel(Settings settings)
     {
         _settings = settings;
-        Initialize();
+        SortedEnabledModsVm = new SearchableSortedModListViewModel(_enabledMods, _comparer);
+        SortedDisabledModsVm = new SearchableSortedModListViewModel(_disabledMods, _comparer);
     }
 
     
@@ -217,8 +166,8 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
 
     public void Dispose()
     {
-        _sortedEnabledModsDisposable.Dispose();
-        _sortedDisabledModsDisposable.Dispose();
+        SortedEnabledModsVm.Dispose();
+        SortedDisabledModsVm.Dispose();
         _enabledMods.Dispose();
         _disabledMods.Dispose();
     }

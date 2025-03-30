@@ -78,18 +78,19 @@
             
             <Separator Grid.Column="1"/>
             
-            <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250">
+            <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250" 
+                  DataContext="{Binding SortedEnabledModsVm}">
                 <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
                 <Panel Grid.Row="1">
                     <TextBox Name="EnabledModsSearchTextBox"
-                             Text="{Binding EnabledModsSearchText, Mode=TwoWay}"
+                             Text="{Binding SearchText, Mode=TwoWay}"
                              Watermark="Search mods" />
                     <Button HorizontalAlignment="Right" Click="ClearEnabledSearchQueryButton_OnClick"> &#x2715; </Button>
                 </Panel>
                 <ListBox Grid.Row="2"
                          Name="EnabledModsListBox"
                          SelectionMode="Multiple"
-                         ItemsSource="{Binding SortedEnabledMods}"
+                         ItemsSource="{Binding SortedList}"
                          BorderThickness="1, 0, 1, 1"
                          SelectionChanged="EnabledModsListBox_OnSelectionChanged">
                 </ListBox>
@@ -101,18 +102,19 @@
                 <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
             </StackPanel>
             
-            <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *" MinWidth="250">
+            <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                DataContext="{Binding SortedDisabledModsVm}">
                 <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
                 <Panel Grid.Row="1">
                     <TextBox Name="DisabledModsSearchTextBox"
-                             Text="{Binding DisabledModsSearchText, Mode=TwoWay}"
+                             Text="{Binding SearchText, Mode=TwoWay}"
                              Watermark="Search mods"/>
                     <Button HorizontalAlignment="Right" Click="ClearDisabledSearchQueryButton_OnClick"> &#x2715; </Button>
                 </Panel>
                 <ListBox Grid.Row="2"
                          Name="DisabledModsListBox"
                          SelectionMode="Multiple"
-                         ItemsSource="{Binding SortedDisabledMods}"
+                         ItemsSource="{Binding SortedList}"
                          BorderThickness="1, 0, 1, 1"
                          SelectionChanged="DisabledModsListBox_OnSelectionChanged"/>
             </Grid>

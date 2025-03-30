@@ -198,13 +198,13 @@ public partial class MainWindow : Window
         _vm.LoadModList(readStream);
     }
 
-    private void ClearDisabledSearchQueryButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        _vm.DisabledModsSearchText = string.Empty;
-    }
-
     private void ClearEnabledSearchQueryButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        _vm.EnabledModsSearchText = string.Empty;
+        _vm.SortedEnabledModsVm.SearchText = string.Empty;
     }
+    private void ClearDisabledSearchQueryButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _vm.SortedDisabledModsVm.SearchText = string.Empty;
+    }
+
 }
