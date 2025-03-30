@@ -83,16 +83,20 @@ public partial class MainWindow : Window
 
     private void DisableModButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        var selectedModsIndexes = EnabledModsListBox.Selection.SelectedIndexes;
-        var selectedMods = selectedModsIndexes.Select(index => _vm.EnabledMods[index]).ToList();
+        var selectedMods = EnabledModsListBox.Selection.SelectedItems
+            .OfType<Mod>()
+            .ToList();
+        
         _vm.DisableMods(selectedMods);
         _vm.LastSelectedMod = null;
     }
 
     private void EnableModButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        var selectedModsIndexes = DisabledModsListBox.Selection.SelectedIndexes;
-        var selectedMods = selectedModsIndexes.Select(index => _vm.DisabledMods[index]).ToList();
+        var selectedMods = DisabledModsListBox.Selection.SelectedItems
+            .OfType<Mod>()
+            .ToList();
+        
         _vm.EnableMods(selectedMods);
         _vm.LastSelectedMod = null;
     }
