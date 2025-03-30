@@ -8,7 +8,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishSingleFile>true</PublishSingleFile>
-    <PublicMode>Partial</PublicMode>
+    <TrimMode>partial</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>

@@ -58,7 +58,7 @@ public partial class MainWindow : Window
             // show a message box
             var box = MessageBoxManager.GetMessageBoxStandard(
             "Error",
-            "Invalid path"
+            "Invalid operation: " + exception.Message
             );
             await box.ShowAsync();
         }
