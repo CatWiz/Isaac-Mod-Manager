@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
-using DynamicData.Binding;
 using ModManager.Models;
-using Tmds.DBus.Protocol;
 
 namespace ModManager.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase, IDisposable
+public class MainWindowViewModel : ViewModelBase, IDisposable
 {
-    private ModFolderNameComparer _comparer = new();
+    private readonly ModFolderNameComparer _comparer = new();
 
-    private Settings _settings;
+    private readonly Settings _settings;
     private Mod? _lastSelectedMod;
     public Settings Settings => _settings;
 
@@ -154,7 +147,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public void LoadModList(IEnumerable<string> modFolders)
+    private void LoadModList(IEnumerable<string> modFolders)
     {
         _enabledMods.Clear();
         _disabledMods.Clear();

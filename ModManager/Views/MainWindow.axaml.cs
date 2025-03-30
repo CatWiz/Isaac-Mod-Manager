@@ -1,16 +1,12 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using DynamicData;
-using DynamicData.Binding;
 using ModManager.Models;
 using ModManager.ViewModels;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 
 namespace ModManager.Views;
 
