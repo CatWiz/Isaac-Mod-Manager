@@ -8,6 +8,13 @@ using System.Text.Json.Serialization;
 
 namespace ModManager.Models;
 
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Settings))]
+public partial class SettingsJsonSerializerContext : JsonSerializerContext
+{
+    
+}
+
 [JsonSerializable(typeof(Settings))]
 public class Settings : INotifyPropertyChanged
 {
@@ -50,18 +57,18 @@ public class Settings : INotifyPropertyChanged
 
     public static Settings Load(string path)
     {
-        if (!System.IO.File.Exists(path))
+        if (!File.Exists(path))
         {
             return new Settings();
         }
 
-        var json = System.IO.File.ReadAllText(path);
-        return JsonSerializer.Deserialize<Settings>(json) ?? new Settings();
+        var json = File.ReadAllText(path);
+        return JsonSerializer.Deserialize<Settings>(json, SettingsJsonSerializerContext.Default.Settings) ?? new Settings();
     }
     
     public void Save(string path)
     {
-        var json = JsonSerializer.Serialize(this);
-        System.IO.File.WriteAllText(path, json);
+        var json = JsonSerializer.Serialize(this, SettingsJsonSerializerContext.Default.Settings);
+        File.WriteAllText(path, json);
     }
 }
