@@ -21,9 +21,9 @@ public partial class MainWindow : Window
     public MainWindow(MainWindowViewModel vm)
     {
         InitializeComponent();
-        
         DataContext = _vm = vm;
-        Closed += (sender, args) =>
+        
+        Closing += (sender, args) =>
         {
             _vm.Settings.Save(Settings.DefaultStoragePath);
         };
