@@ -197,4 +197,14 @@ public partial class MainWindow : Window
         await using var readStream = await storageFile.OpenReadAsync();
         _vm.LoadModList(readStream);
     }
+
+    private void ClearDisabledSearchQueryButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _vm.DisabledModsSearchText = string.Empty;
+    }
+
+    private void ClearEnabledSearchQueryButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _vm.EnabledModsSearchText = string.Empty;
+    }
 }
