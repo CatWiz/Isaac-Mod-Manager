@@ -127,6 +127,14 @@
                     </StackPanel>
                     
                     <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <StackPanel.Styles>
+                            <Style Selector="Button">
+                                <Setter Property="Padding" Value="0, 14"/>
+                            </Style>
+                            <Style Selector="TextBlock">
+                                <Setter Property="FontSize" Value="14"/>
+                            </Style>
+                        </StackPanel.Styles>
                         <Button Name="RefreshModsButton"
                                 Click="RefreshModsButton_OnClick">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
