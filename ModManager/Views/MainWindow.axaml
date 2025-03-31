@@ -85,7 +85,9 @@
                     <TextBox Name="EnabledModsSearchTextBox"
                              Text="{Binding SearchText, Mode=TwoWay}"
                              Watermark="Search mods" />
-                    <Button HorizontalAlignment="Right" Click="ClearEnabledSearchQueryButton_OnClick"> &#x2715; </Button>
+                    <Button HorizontalAlignment="Right"
+                            BorderThickness="0" Background="Transparent"
+                            Click="ClearEnabledSearchQueryButton_OnClick"> &#x2716; </Button>
                 </Panel>
                 <ListBox Grid.Row="2"
                          Name="EnabledModsListBox"
@@ -109,7 +111,9 @@
                     <TextBox Name="DisabledModsSearchTextBox"
                              Text="{Binding SearchText, Mode=TwoWay}"
                              Watermark="Search mods"/>
-                    <Button HorizontalAlignment="Right" Click="ClearDisabledSearchQueryButton_OnClick"> &#x2715; </Button>
+                    <Button HorizontalAlignment="Right"
+                            BorderThickness="0" Background="Transparent"
+                            Click="ClearDisabledSearchQueryButton_OnClick"> &#x2716; </Button>
                 </Panel>
                 <ListBox Grid.Row="2"
                          Name="DisabledModsListBox"
