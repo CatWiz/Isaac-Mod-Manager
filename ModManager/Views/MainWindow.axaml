@@ -16,9 +16,9 @@
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
-    
+
     <Window.Styles>
         <Style Selector="TextBox.readonly">
             <Setter Property="IsReadOnly" Value="True"></Setter>
@@ -27,7 +27,7 @@
             <Setter Property="Margin" Value="0,0,5,0"></Setter>
         </Style>
     </Window.Styles>
-    
+
     <Grid RowDefinitions="Auto,Auto, *">
         <Grid Grid.Row="0">
             <Grid ColumnDefinitions="*, Auto">
@@ -36,8 +36,8 @@
                     Classes="readonly"
                     HorizontalAlignment="Stretch"
                     Watermark="No game path selected"
-                    Text="{Binding Path=GamePath, Mode=OneWay}"/>
-                
+                    Text="{Binding Path=GamePath, Mode=OneWay}" />
+
                 <Button Grid.Column="1" Name="SelectGamePathButton"
                         Click="SelectGamePathButton_OnClick"
                         VerticalAlignment="Stretch">
@@ -45,105 +45,118 @@
                 </Button>
             </Grid>
         </Grid>
-        
-        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0,10, 0, 8"></Border>       
-        
-        <Grid Grid.Row="2"
-              ColumnDefinitions="*, Auto, Auto, Auto, Auto, Auto, Auto"
-              IsEnabled="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-            <Grid.DataTemplates>
-                <DataTemplate DataType="model:Mod">
-                    <Grid ColumnDefinitions="*">
-                        <TextBlock TextWrapping="Wrap" Text="{Binding DisplayName, Mode=OneTime}"/>
-                    </Grid>
-                </DataTemplate>
-            </Grid.DataTemplates>
-            
-            <Grid Grid.Column="0">
-                <StackPanel 
-                    IsVisible="{Binding LastSelectedMod, Converter={x:Static ObjectConverters.IsNotNull}}">
-                    
-                    <TextBlock 
-                        Text="{Binding 
+
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0,10, 0, 8"></Border>
+
+        <Panel Grid.Row="2">
+            <Grid
+                  ColumnDefinitions="*, Auto, Auto, Auto, Auto, Auto, Auto"
+                  IsEnabled="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <Grid.DataTemplates>
+                    <DataTemplate DataType="model:Mod">
+                        <Grid ColumnDefinitions="*">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding DisplayName, Mode=OneTime}" />
+                        </Grid>
+                    </DataTemplate>
+                </Grid.DataTemplates>
+
+                <Grid Grid.Column="0">
+                    <StackPanel
+                        IsVisible="{Binding LastSelectedMod, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+                        <TextBlock
+                            Text="{Binding 
                         LastSelectedMod.DisplayName, 
-                        StringFormat='Display name: {0}', FallbackValue='none' }"/>
-                    <TextBlock 
-                        Text="{Binding LastSelectedMod.FolderName, 
-                        StringFormat='Folder name: {0}', FallbackValue='none'}"/>
-                    <TextBlock 
-                        Text="{Binding LastSelectedMod.Metadata.Name,
-                        StringFormat='Metadata name: {0}', FallbackValue='none'}"/>
+                        StringFormat='Display name: {0}', FallbackValue='none' }" />
+                        <TextBlock
+                            Text="{Binding LastSelectedMod.FolderName, 
+                        StringFormat='Folder name: {0}', FallbackValue='none'}" />
+                        <TextBlock
+                            Text="{Binding LastSelectedMod.Metadata.Name,
+                        StringFormat='Metadata name: {0}', FallbackValue='none'}" />
+                    </StackPanel>
+                </Grid>
+
+                <Separator Grid.Column="1" />
+
+                <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                      DataContext="{Binding SortedEnabledModsVm}">
+                    <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
+                    <Panel Grid.Row="1">
+                        <TextBox Name="EnabledModsSearchTextBox"
+                                 Text="{Binding SearchText, Mode=TwoWay}"
+                                 Watermark="Search mods" />
+                        <Button HorizontalAlignment="Right"
+                                BorderThickness="0" Background="Transparent"
+                                Click="ClearEnabledSearchQueryButton_OnClick">
+                            &#x2716;
+                        </Button>
+                    </Panel>
+                    <ListBox Grid.Row="2"
+                             Name="EnabledModsListBox"
+                             SelectionMode="Multiple"
+                             ItemsSource="{Binding SortedList}"
+                             BorderThickness="1, 0, 1, 1"
+                             SelectionChanged="EnabledModsListBox_OnSelectionChanged">
+                    </ListBox>
+                </Grid>
+
+                <StackPanel Grid.Column="3" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
+                    <Button Padding="5, 0" Name="DisableModButton" Click="DisableModButton_OnClick">-&gt;</Button>
+                    <Separator Margin="0, 10" />
+                    <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
+                </StackPanel>
+
+                <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                      DataContext="{Binding SortedDisabledModsVm}">
+                    <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
+                    <Panel Grid.Row="1">
+                        <TextBox Name="DisabledModsSearchTextBox"
+                                 Text="{Binding SearchText, Mode=TwoWay}"
+                                 Watermark="Search mods" />
+                        <Button HorizontalAlignment="Right"
+                                BorderThickness="0" Background="Transparent"
+                                Click="ClearDisabledSearchQueryButton_OnClick">
+                            &#x2716;
+                        </Button>
+                    </Panel>
+                    <ListBox Grid.Row="2"
+                             Name="DisabledModsListBox"
+                             SelectionMode="Multiple"
+                             ItemsSource="{Binding SortedList}"
+                             BorderThickness="1, 0, 1, 1"
+                             SelectionChanged="DisabledModsListBox_OnSelectionChanged" />
+                </Grid>
+                <Separator Grid.Column="5" Margin="5, 0"></Separator>
+                <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Bottom" MaxWidth="75">
+                    <Button Name="RefreshModsButton"
+                            Click="RefreshModsButton_OnClick">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
+                    </Button>
+                    <Separator Margin="0, 5" />
+                    <Button Name="ApplyModsButton"
+                            Click="ApplyModsButton_OnClick">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
+                    </Button>
+                    <Separator Margin="0, 5" />
+                    <Button Name="SaveModListButton"
+                            Click="SaveModListButton_OnClick">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Save Modlist</TextBlock>
+                    </Button>
+                    <Separator Margin="0, 5" />
+                    <Button Name="LoadModListButton"
+                            Click="LoadModListButton_OnClick">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Load Modlist</TextBlock>
+                    </Button>
                 </StackPanel>
             </Grid>
             
-            <Separator Grid.Column="1"/>
-            
-            <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250" 
-                  DataContext="{Binding SortedEnabledModsVm}">
-                <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
-                <Panel Grid.Row="1">
-                    <TextBox Name="EnabledModsSearchTextBox"
-                             Text="{Binding SearchText, Mode=TwoWay}"
-                             Watermark="Search mods" />
-                    <Button HorizontalAlignment="Right"
-                            BorderThickness="0" Background="Transparent"
-                            Click="ClearEnabledSearchQueryButton_OnClick"> &#x2716; </Button>
-                </Panel>
-                <ListBox Grid.Row="2"
-                         Name="EnabledModsListBox"
-                         SelectionMode="Multiple"
-                         ItemsSource="{Binding SortedList}"
-                         BorderThickness="1, 0, 1, 1"
-                         SelectionChanged="EnabledModsListBox_OnSelectionChanged">
-                </ListBox>
-            </Grid>
-            
-            <StackPanel Grid.Column="3" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
-                <Button Padding="5, 0" Name="DisableModButton" Click="DisableModButton_OnClick">-&gt;</Button>
-                <Separator Margin="0, 10"/>
-                <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
-            </StackPanel>
-            
-            <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *" MinWidth="250"
-                DataContext="{Binding SortedDisabledModsVm}">
-                <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
-                <Panel Grid.Row="1">
-                    <TextBox Name="DisabledModsSearchTextBox"
-                             Text="{Binding SearchText, Mode=TwoWay}"
-                             Watermark="Search mods"/>
-                    <Button HorizontalAlignment="Right"
-                            BorderThickness="0" Background="Transparent"
-                            Click="ClearDisabledSearchQueryButton_OnClick"> &#x2716; </Button>
-                </Panel>
-                <ListBox Grid.Row="2"
-                         Name="DisabledModsListBox"
-                         SelectionMode="Multiple"
-                         ItemsSource="{Binding SortedList}"
-                         BorderThickness="1, 0, 1, 1"
-                         SelectionChanged="DisabledModsListBox_OnSelectionChanged"/>
-            </Grid>
-            <Separator Grid.Column="5" Margin="5, 0"></Separator>
-            <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Bottom" MaxWidth="75">
-                <Button Name="RefreshModsButton"
-                        Click="RefreshModsButton_OnClick">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
-                </Button>
-                <Separator Margin="0, 5"/>
-                <Button Name="ApplyModsButton"
-                        Click="ApplyModsButton_OnClick">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
-                </Button>
-                <Separator Margin="0, 5"/>
-                <Button Name="SaveModListButton"
-                        Click="SaveModListButton_OnClick">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Save Modlist</TextBlock>
-                </Button>
-                <Separator Margin="0, 5"/>
-                <Button Name="LoadModListButton"
-                        Click="LoadModListButton_OnClick">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Load Modlist</TextBlock>
-                </Button>
-            </StackPanel>
-        </Grid>
+            <TextBlock
+                IsVisible="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                FontWeight="Bold" FontSize="72"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                TextAlignment="Center" TextWrapping="Wrap">Select path to game folder</TextBlock>
+        </Panel>
+
     </Grid>
 </Window>
