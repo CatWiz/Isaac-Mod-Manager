@@ -24,7 +24,7 @@
             <Setter Property="IsReadOnly" Value="True"></Setter>
             <Setter Property="CaretBrush" Value="Transparent"></Setter>
             <Setter Property="Focusable" Value="False"></Setter>
-            <Setter Property="Margin" Value="0,0,5,0"></Setter>
+            <Setter Property="ClearSelectionOnLostFocus" Value="True"></Setter>
         </Style>
     </Window.Styles>
 
@@ -36,6 +36,7 @@
                     Classes="readonly"
                     HorizontalAlignment="Stretch"
                     Watermark="No game path selected"
+                    Margin="0,0,5,0"
                     Text="{Binding Path=GamePath, Mode=OneWay}" />
 
                 <Button Grid.Column="1" Name="SelectGamePathButton"
@@ -47,11 +48,11 @@
         </Grid>
 
         <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Background="Black" Margin="0,10, 0, 8"></Border>
-
+    
         <Panel Grid.Row="2">
             <Grid
-                  ColumnDefinitions="*, Auto, *, Auto, Auto"
-                  IsEnabled="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                ColumnDefinitions="*, Auto, *, Auto, Auto"
+                IsEnabled="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <Grid.DataTemplates>
                     <DataTemplate DataType="model:Mod">
                         <Grid ColumnDefinitions="*">
@@ -60,7 +61,7 @@
                     </DataTemplate>
                 </Grid.DataTemplates>
 
-                <Grid Grid.Column="0" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                <Grid Grid.Column="0" RowDefinitions="Auto, Auto, *" MinWidth="200"
                       DataContext="{Binding SortedEnabledModsVm}">
                     <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
                     <Panel Grid.Row="1">
@@ -88,7 +89,7 @@
                     <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
                 </StackPanel>
 
-                <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="200"
                       DataContext="{Binding SortedDisabledModsVm}">
                     <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
                     <Panel Grid.Row="1">
@@ -108,35 +109,54 @@
                              BorderThickness="1, 0, 1, 1"
                              SelectionChanged="DisabledModsListBox_OnSelectionChanged" />
                 </Grid>
-                <Separator Grid.Column="3" Margin="5, 0"></Separator>
-                <StackPanel Grid.Column="4" Orientation="Vertical" VerticalAlignment="Bottom" MaxWidth="75">
-                    <Button Name="RefreshModsButton"
-                            Click="RefreshModsButton_OnClick">
-                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
-                    </Button>
-                    <Separator Margin="0, 5" />
-                    <Button Name="ApplyModsButton"
-                            Click="ApplyModsButton_OnClick">
-                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
-                    </Button>
-                    <Separator Margin="0, 5" />
-                    <Button Name="SaveModListButton"
-                            Click="SaveModListButton_OnClick">
-                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Save Modlist</TextBlock>
-                    </Button>
-                    <Separator Margin="0, 5" />
-                    <Button Name="LoadModListButton"
-                            Click="LoadModListButton_OnClick">
-                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Load Modlist</TextBlock>
-                    </Button>
-                </StackPanel>
+                
+                <Separator Grid.Column="3" Margin="10, 0"></Separator>
+
+                <Grid Grid.Column="4" RowDefinitions="*, Auto" MaxWidth="150" MinWidth="150">
+                    <StackPanel Grid.Row="0" DataContext="{Binding LastSelectedMod}"
+                                IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <TextBlock TextWrapping="Wrap"
+                                   Margin="0, 0, 0, 5"
+                                 Text="{Binding DisplayName, StringFormat='Name: {0}', Mode=OneTime}" />
+                        <TextBlock TextWrapping="Wrap"
+                                   Margin="0, 0, 0, 5"
+                                   Text="{Binding FolderName, StringFormat='Folder name: {0}', Mode=OneTime}" />
+                        <TextBlock TextWrapping="Wrap"
+                                   Margin="0, 0, 0, 5"
+                                   Text="{Binding Metadata.Version, FallbackValue='Version:', StringFormat='Version: {0}', Mode=OneTime}" />
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
+                        <Button Name="RefreshModsButton"
+                                Click="RefreshModsButton_OnClick">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
+                        </Button>
+                        <Separator Margin="0, 5" />
+                        <Button Name="ApplyModsButton"
+                                Click="ApplyModsButton_OnClick">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
+                        </Button>
+                        <Separator Margin="0, 5" />
+                        <Button Name="SaveModListButton"
+                                Click="SaveModListButton_OnClick">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Save Modlist</TextBlock>
+                        </Button>
+                        <Separator Margin="0, 5" />
+                        <Button Name="LoadModListButton"
+                                Click="LoadModListButton_OnClick">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Load Modlist</TextBlock>
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
-            
+
             <TextBlock
                 IsVisible="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNullOrEmpty}}"
                 FontWeight="Bold" FontSize="72"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                TextAlignment="Center" TextWrapping="Wrap">Select path to game folder</TextBlock>
+                TextAlignment="Center" TextWrapping="Wrap">
+                Select path to game folder
+            </TextBlock>
         </Panel>
 
     </Grid>
