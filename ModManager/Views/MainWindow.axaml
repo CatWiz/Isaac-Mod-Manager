@@ -115,15 +115,15 @@
                 <Grid Grid.Column="4" RowDefinitions="*, Auto" MaxWidth="150" MinWidth="150">
                     <StackPanel Grid.Row="0" DataContext="{Binding LastSelectedMod}"
                                 IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <TextBlock TextWrapping="Wrap"
-                                   Margin="0, 0, 0, 5"
-                                 Text="{Binding DisplayName, StringFormat='Name: {0}', Mode=OneTime}" />
-                        <TextBlock TextWrapping="Wrap"
-                                   Margin="0, 0, 0, 5"
-                                   Text="{Binding FolderName, StringFormat='Folder name: {0}', Mode=OneTime}" />
-                        <TextBlock TextWrapping="Wrap"
-                                   Margin="0, 0, 0, 5"
-                                   Text="{Binding Metadata.Version, FallbackValue='Version:', StringFormat='Version: {0}', Mode=OneTime}" />
+                        <SelectableTextBlock TextWrapping="Wrap"
+                                             Margin="0, 0, 0, 5"
+                                             Text="{Binding DisplayName, StringFormat='Name: {0}', Mode=OneTime}" />
+                        <SelectableTextBlock TextWrapping="Wrap"
+                                             Margin="0, 0, 0, 5"
+                                             Text="{Binding FolderName, StringFormat='Folder name: {0}', Mode=OneTime}" />
+                        <SelectableTextBlock TextWrapping="Wrap"
+                                             Margin="0, 0, 0, 5"
+                                             Text="{Binding Metadata.Version, FallbackValue='Version:', StringFormat='Version: {0}', Mode=OneTime}" />
                     </StackPanel>
                     
                     <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom">
