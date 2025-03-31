@@ -57,6 +57,20 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
 
     
     #region ModManagementCommands
+    
+    public bool IsValidGamePath(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return false;
+        if (!Directory.Exists(path)) return false;
+        
+        var gameExecutablePath = Path.Combine(path, "isaac-ng.exe");
+        if (!File.Exists(gameExecutablePath)) return false;
+        
+        var modsFolderPath = Path.Combine(path, "mods");
+        if (!Directory.Exists(modsFolderPath)) return false;
+        
+        return true;
+    }
     public void UpdateModsList()
     {
         var modsFolderPath = Settings.ModsPath;

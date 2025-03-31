@@ -7,6 +7,7 @@ using Avalonia.Platform.Storage;
 using ModManager.Models;
 using ModManager.ViewModels;
 using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace ModManager.Views;
 
@@ -28,7 +29,7 @@ public partial class MainWindow : Window
             _vm.Settings.Save(Settings.DefaultStoragePath);
         };
         
-        if (!string.IsNullOrEmpty(_vm.GamePath))
+        if (vm.IsValidGamePath(vm.Settings.GamePath))
         {
             try
             {
@@ -36,12 +37,11 @@ public partial class MainWindow : Window
             }
             catch (Exception e)
             {
-                // show a message box
-                var box = MessageBoxManager.GetMessageBoxStandard(
+                MessageBoxManager.GetMessageBoxStandard(
                 "Error",
-                "An error occurred while updating the mods list: " + e.Message
-                );
-                box.ShowAsync();
+                "An error occurred while updating the mods list: " + e.Message,
+                    icon: MsBox.Avalonia.Enums.Icon.Error
+                ).ShowAsync();
             }
         }
     }
@@ -62,22 +62,41 @@ public partial class MainWindow : Window
         try
         {
             var selectedPath = storageFolder?.Path.AbsolutePath;
-            if (!string.IsNullOrEmpty(selectedPath))
+            if (string.IsNullOrEmpty(selectedPath)) return;
+            
+            selectedPath = selectedPath.Replace("%20", " ");
+            if (_vm.IsValidGamePath(selectedPath))
             {
-                selectedPath = selectedPath.Replace("%20", " ");
-                var gameExecutablePath = Path.Combine(selectedPath, "isaac-ng.exe");
-                _vm.GamePath = File.Exists(gameExecutablePath) ? selectedPath : string.Empty;
-                _vm.UpdateModsList();
+                _vm.GamePath = selectedPath;
+                try
+                {
+                    _vm.UpdateModsList();
+                }
+                catch (Exception exception)
+                {
+                    await MessageBoxManager.GetMessageBoxStandard(
+                        "Error",
+                        "An error occurred while updating the mods list: " + exception.Message,
+                            icon: MsBox.Avalonia.Enums.Icon.Error
+                    ).ShowAsync();
+                }
+            }
+            else
+            {
+                await MessageBoxManager.GetMessageBoxStandard(
+                    "Invalid path",
+                    "The selected path is not a valid game folder",
+                        icon: MsBox.Avalonia.Enums.Icon.Error
+                ).ShowAsync();
             }
         }
         catch (InvalidOperationException exception)
         {
-            // show a message box
-            var box = MessageBoxManager.GetMessageBoxStandard(
+            await MessageBoxManager.GetMessageBoxStandard(
             "Error",
-            "Invalid operation: " + exception.Message
-            );
-            await box.ShowAsync();
+            "Invalid operation: " + exception.Message,
+                icon: MsBox.Avalonia.Enums.Icon.Error
+            ).ShowAsync();
         }
     }
     
@@ -85,12 +104,11 @@ public partial class MainWindow : Window
     {
         if (string.IsNullOrEmpty(_vm.GamePath))
         {
-            // show a message box
-            var box = MessageBoxManager.GetMessageBoxStandard(
+            MessageBoxManager.GetMessageBoxStandard(
             "No path",
-            "Specify a valid path to the game folder"
-            );
-            box.ShowAsync();
+            "Specify a valid path to the game folder",
+                icon: MsBox.Avalonia.Enums.Icon.Warning
+            ).ShowAsync();
             return;
         }
         _vm.UpdateModsList();
