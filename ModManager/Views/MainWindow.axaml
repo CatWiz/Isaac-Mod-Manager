@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:model="using:ModManager.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        Width="900" Height="450"
-        MinWidth="700" MinHeight="300"
+        Width="700" Height="450"
+        MinWidth="500" MinHeight="300"
         x:Class="ModManager.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -50,7 +50,7 @@
 
         <Panel Grid.Row="2">
             <Grid
-                  ColumnDefinitions="*, Auto, Auto, Auto, Auto, Auto, Auto"
+                  ColumnDefinitions="*, Auto, *, Auto, Auto"
                   IsEnabled="{Binding Path=GamePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <Grid.DataTemplates>
                     <DataTemplate DataType="model:Mod">
@@ -60,26 +60,7 @@
                     </DataTemplate>
                 </Grid.DataTemplates>
 
-                <Grid Grid.Column="0">
-                    <StackPanel
-                        IsVisible="{Binding LastSelectedMod, Converter={x:Static ObjectConverters.IsNotNull}}">
-
-                        <TextBlock
-                            Text="{Binding 
-                        LastSelectedMod.DisplayName, 
-                        StringFormat='Display name: {0}', FallbackValue='none' }" />
-                        <TextBlock
-                            Text="{Binding LastSelectedMod.FolderName, 
-                        StringFormat='Folder name: {0}', FallbackValue='none'}" />
-                        <TextBlock
-                            Text="{Binding LastSelectedMod.Metadata.Name,
-                        StringFormat='Metadata name: {0}', FallbackValue='none'}" />
-                    </StackPanel>
-                </Grid>
-
-                <Separator Grid.Column="1" />
-
-                <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                <Grid Grid.Column="0" RowDefinitions="Auto, Auto, *" MinWidth="250"
                       DataContext="{Binding SortedEnabledModsVm}">
                     <TextBlock Grid.Row="0" FontWeight="Bold">Enabled mods:</TextBlock>
                     <Panel Grid.Row="1">
@@ -101,13 +82,13 @@
                     </ListBox>
                 </Grid>
 
-                <StackPanel Grid.Column="3" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
+                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5, 0" VerticalAlignment="Center">
                     <Button Padding="5, 0" Name="DisableModButton" Click="DisableModButton_OnClick">-&gt;</Button>
                     <Separator Margin="0, 10" />
                     <Button Padding="5, 0" Name="EnableModButton" Click="EnableModButton_OnClick">&lt;-</Button>
                 </StackPanel>
 
-                <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *" MinWidth="250"
+                <Grid Grid.Column="2" RowDefinitions="Auto, Auto, *" MinWidth="250"
                       DataContext="{Binding SortedDisabledModsVm}">
                     <TextBlock Grid.Row="0" FontWeight="Bold">Disabled mods:</TextBlock>
                     <Panel Grid.Row="1">
@@ -127,8 +108,8 @@
                              BorderThickness="1, 0, 1, 1"
                              SelectionChanged="DisabledModsListBox_OnSelectionChanged" />
                 </Grid>
-                <Separator Grid.Column="5" Margin="5, 0"></Separator>
-                <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Bottom" MaxWidth="75">
+                <Separator Grid.Column="3" Margin="5, 0"></Separator>
+                <StackPanel Grid.Column="4" Orientation="Vertical" VerticalAlignment="Bottom" MaxWidth="75">
                     <Button Name="RefreshModsButton"
                             Click="RefreshModsButton_OnClick">
                         <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
