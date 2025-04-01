@@ -36,7 +36,7 @@ jobs:
           dotnet publish -c Release -r ${{ matrix.target }} -o "${release_name}"
           
           # Create a zip file
-          if [ ${{ matrix.target }} == 'win-x64' ]; then
+          if [ ${{ matrix.target }} == 'win-x64' ] then
             7z a -tzip "./Releases/${release_name}.zip" "./${release_name}/*"
           else
             tar czvf "./Releases/${release_name}.tar.gz" "${release_name}"
