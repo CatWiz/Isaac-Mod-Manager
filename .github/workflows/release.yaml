@@ -1,7 +1,9 @@
 ﻿name: Publish release
 on:
-  release:
-    types: [published]
+  push:
+    branches: ["main"]
+    tags:
+    - 'v*'
     
 jobs:
   release:
