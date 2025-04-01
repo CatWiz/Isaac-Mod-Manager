@@ -36,7 +36,7 @@ jobs:
           
           dotnet publish -c Release -r ${{ matrix.target }} -o "${release_name}"
           
-          mkdir -p Releases
+          mkdir -p Releases;
           
           # Create a zip file
           if [ ${{ matrix.target }} == 'win-x64' ] then
