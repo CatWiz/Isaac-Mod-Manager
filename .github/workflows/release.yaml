@@ -1,9 +1,10 @@
 ﻿name: Publish release
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
     tags:
-    - 'v*'
+      - '*'
     
 jobs:
   release:
@@ -47,7 +48,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files:
-            - './Releases/*'
+          files: |
+            ./Releases/*
           token: ${{ secrets.PUBLISH_RELEASE_TOKEN }}
             
