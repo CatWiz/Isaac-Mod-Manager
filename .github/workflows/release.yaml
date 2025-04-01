@@ -1,0 +1,54 @@
+﻿name: Publish release
+on:
+  push:
+    tags:
+    - 'v*'
+  branches:
+    - main
+    
+jobs:
+  release:
+    strategy:
+      matrix:
+        kind: ['windows', 'linux']
+        include:
+          - kind: 'windows'
+            os: 'windows-latest'
+            target: 'win-x64'
+          - kind: 'linux'
+            os: 'ubuntu-latest'
+            target: 'linux-x64'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          
+      - name: Build
+        run: |
+          tag=$(git describe --tags --abbrev=0)
+          release_name="IsaacModManager-$tag-${{ matrix.kind }}"
+          
+          dotnet publish -c Release -r ${{ matrix.target }} -o "${release_name}"
+          
+          # Create a zip file
+          if [ ${{ matrix.target }} == 'win-x64' ]; then
+            7z a -tzip "./Releases/${release_name}.zip" "./${release_name}/*"
+          else
+            tar czvf "./Releases/${release_name}.tar.gz" "${release_name}"
+          fi
+          
+          # Delete the folder
+          rm -rf "$release_name"
+          
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files:
+            - './Releases/*'
+          token: ${{ secrets.PUBLISH_RELEASE_TOKEN }}
+            
