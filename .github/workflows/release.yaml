@@ -18,6 +18,7 @@ jobs:
           - kind: 'linux'
             os: 'ubuntu-latest'
             target: 'linux-x64'
+            
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
