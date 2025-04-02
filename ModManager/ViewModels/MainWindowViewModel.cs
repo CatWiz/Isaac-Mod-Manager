@@ -29,6 +29,15 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
             this.RaisePropertyChanged();
         }
     }
+    public bool ApplyModlistOnLoad
+    {
+        get => _settings.ApplyModlistOnLoad;
+        set
+        {
+            _settings.ApplyModlistOnLoad = value;
+            this.RaisePropertyChanged();
+        }
+    }
 
     public Mod? LastSelectedMod
     {
@@ -154,6 +163,11 @@ public class MainWindowViewModel : ReactiveObject, IDisposable
             {
                 _disabledMods.Add(mod);                
             }
+        }
+
+        if (ApplyModlistOnLoad)
+        {
+            ApplyMods();
         }
     }
 

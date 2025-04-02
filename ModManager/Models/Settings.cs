@@ -27,6 +27,7 @@ public sealed class Settings : INotifyPropertyChanged
     public string ModsPath => Path.Combine(GamePath, "mods");
     
     private string _gamePath = string.Empty;
+    private bool _applyModlistOnLoad = true;
 
     [JsonInclude]
     public string GamePath
@@ -36,6 +37,18 @@ public sealed class Settings : INotifyPropertyChanged
         {
             if (value == _gamePath) return;
             _gamePath = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    [JsonInclude]
+    public bool ApplyModlistOnLoad
+    {
+        get => _applyModlistOnLoad;
+        set
+        {
+            if (value == _applyModlistOnLoad) return;
+            _applyModlistOnLoad = value;
             OnPropertyChanged();
         }
     }

@@ -136,24 +136,32 @@
                             </Style>
                         </StackPanel.Styles>
                         <Button Name="RefreshModsButton"
-                                Click="RefreshModsButton_OnClick">
+                                Click="RefreshModsButton_OnClick"
+                                ToolTip.Tip="Reads the mods from the game folder">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Refresh Mods</TextBlock>
                         </Button>
                         <Separator Margin="0, 5" />
                         <Button Name="ApplyModsButton"
-                                Click="ApplyModsButton_OnClick">
+                                Click="ApplyModsButton_OnClick"
+                                ToolTip.Tip="Enables/Disables mods according to the current selection">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Apply Mods</TextBlock>
                         </Button>
                         <Separator Margin="0, 5" />
                         <Button Name="SaveModListButton"
-                                Click="SaveModListButton_OnClick">
+                                Click="SaveModListButton_OnClick"
+                                ToolTip.Tip="Saves the current modlist to a text file">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Save Modlist</TextBlock>
                         </Button>
                         <Separator Margin="0, 5" />
                         <Button Name="LoadModListButton"
-                                Click="LoadModListButton_OnClick">
+                                Click="LoadModListButton_OnClick"
+                                ToolTip.Tip="Loads a modlist from chosen text file">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Load Modlist</TextBlock>
                         </Button>
+                        <CheckBox IsChecked="{Binding ApplyModlistOnLoad, Mode=TwoWay}"
+                                  Margin="0, 5, 0, 0"
+                                    Content="Apply modlist on load"
+                                  ToolTip.Tip="If checked, the mods will be automatically applied when the modlist is loaded."/>
                     </StackPanel>
                 </Grid>
             </Grid>
