@@ -1,6 +1,6 @@
 A minimalistic and easy to use mod manager tool for Binding of Isaac: Repentance/Afterbirth+
 
-![image](https://github.com/user-attachments/assets/a8f2cd48-5a18-4430-b195-7bbabb16bb9d)
+![image](https://github.com/user-attachments/assets/14af98d4-0660-44db-bc72-69aa597bf4ff)
 
 Features:
 - Automatically detects mods in the game folder
