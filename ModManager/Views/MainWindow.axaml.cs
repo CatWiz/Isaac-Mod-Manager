@@ -185,8 +185,19 @@ public partial class MainWindow : Window
         
         if (storageFile == null) return;
 
-        await using var writeStream = await storageFile.OpenWriteAsync();
-        _vm.SaveCurrentModList(writeStream);
+        try
+        {
+            await using var writeStream = await storageFile.OpenWriteAsync();
+            _vm.SaveCurrentModList(writeStream);
+        }
+        catch (Exception exception)
+        {
+            await MessageBoxManager.GetMessageBoxStandard(
+                "Error",
+                "An error occurred while saving the mod list: " + exception.Message,
+                    icon: MsBox.Avalonia.Enums.Icon.Error
+            ).ShowAsync();
+        }
     }
 
     private async void LoadModListButton_OnClick(object? sender, RoutedEventArgs e)
@@ -211,9 +222,20 @@ public partial class MainWindow : Window
 
         var storageFile = selection.FirstOrDefault();
         if (storageFile == null) return;
-        
-        await using var readStream = await storageFile.OpenReadAsync();
-        _vm.LoadModList(readStream);
+
+        try
+        {
+            await using var readStream = await storageFile.OpenReadAsync();
+            _vm.LoadModList(readStream);
+        }
+        catch (Exception exception)
+        {
+            await MessageBoxManager.GetMessageBoxStandard(
+                "Error",
+                "An error occurred while loading the mod list: " + exception.Message,
+                    icon: MsBox.Avalonia.Enums.Icon.Error
+            ).ShowAsync();
+        }
     }
 
     private void ClearEnabledSearchQueryButton_OnClick(object? sender, RoutedEventArgs e)
